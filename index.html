@@ -187,6 +187,16 @@
         </li>
       
         
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -300,21 +310,17 @@
       
         
           
-            <p>毕业在互联网从事后台开发即将三年了，给自己搭建个窝总结下工作过程中遇到的一些问题以及自己相应的解决方案。基于hexo和github搭建自己的博客站点，是考虑到github提供了免费的服务，自己无需服务，再者这种方案自己更加可控，更加简洁，没有一些乱七八糟的广告干扰。</p>
-<h2 id="hexo介绍"><a href="#hexo介绍" class="headerlink" title="hexo介绍"></a>hexo介绍</h2><p>Hexo是一款基于Node.js的静态博客框架，依赖少易于安装使用，可以方便的生成静态网页托管在GitHub，且hexo对中文支持友好，更加详情内容可参考<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">hexo官网介绍</a>。</p>
-<h2 id="hexo服务搭建"><a href="#hexo服务搭建" class="headerlink" title="hexo服务搭建"></a>hexo服务搭建</h2><h4 id="1-注册github帐号并创建新的repository，用于存放hexo生成的博客文件"><a href="#1-注册github帐号并创建新的repository，用于存放hexo生成的博客文件" class="headerlink" title="1.注册github帐号并创建新的repository，用于存放hexo生成的博客文件"></a>1.注册github帐号并创建新的repository，用于存放hexo生成的博客文件</h4><p>注意repository name得以 帐号名.github.io 格式</p>
-<h4 id="2-在自己的私人git服务或者在github新建立一个repository用于存放源文件"><a href="#2-在自己的私人git服务或者在github新建立一个repository用于存放源文件" class="headerlink" title="2.在自己的私人git服务或者在github新建立一个repository用于存放源文件"></a>2.在自己的私人git服务或者在github新建立一个repository用于存放源文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># pull源码文件管理库</span><br><span class="line">git clone git@github.com:yongssu/blog.git</span><br><span class="line"></span><br><span class="line"># 在自己的机器上安装node并安装hexo</span><br><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br><span class="line"># 在新的地方运行hexo初始命令</span><br><span class="line">hexo init new_blog</span><br><span class="line"></span><br><span class="line"># 将new_blog生成内容拷贝到blog文件内</span><br><span class="line"></span><br><span class="line"># 运行以下命令就能在本地查看hexo服务,地址 localhost:4000</span><br><span class="line">hexo new test_my_blog #创建新的blog文件</span><br><span class="line">hexo g #生成</span><br><span class="line">hexo s</span><br><span class="line"></span><br><span class="line"># 然后就可以在blog对源文件进行管理</span><br></pre></td></tr></table></figure>
-<h4 id="3-部署blog文章到github"><a href="#3-部署blog文章到github" class="headerlink" title="3.部署blog文章到github"></a>3.部署blog文章到github</h4><p>在blog根目录下_config.yml配置站点信息以及上传github地址。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: YONGSSU的技术站点</span><br><span class="line">subtitle: </span><br><span class="line">description:</span><br><span class="line">keywords:</span><br><span class="line">author: yongssu</span><br><span class="line">language:</span><br><span class="line">timezone:</span><br><span class="line"></span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/yongssu/yongssu.github.io</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
-<p>至此就可以通过 注册名.guthub.io 访问个人站点了。</p>
-<h4 id="4-配置域名"><a href="#4-配置域名" class="headerlink" title="4.配置域名"></a>4.配置域名</h4><p>如果需要使用自己的域名，在域名网站注册域名并将域名cname定向到 yongssu.github.io,然后在yongssu.github.io repository下配置相应Custom domain为自己的域名。</p>
-<p>至此，就可以通过自己的域名访问自己的个人网站了。</p>
-<h4 id="5-切换默认hexo主题"><a href="#5-切换默认hexo主题" class="headerlink" title="5.切换默认hexo主题"></a>5.切换默认hexo主题</h4><p>这里采用next主题，在blog文件下，下载相应的主题文件，并在blog跟目录下_config.yml配置文件中修改主题为next。主题相关的的配置在主题文件下的相应_config.yml文件进行配置。</p>
-<h2 id="图片资源上传"><a href="#图片资源上传" class="headerlink" title="图片资源上传"></a>图片资源上传</h2><p>当博文中有图片时，如果直接放在source文件中，会直接占用大量存储空间，因为图片会占据大量的存储的空间，加载的时候相对缓慢 ，这时考虑把博文里的图片上传到某一网站，然后获得外部链接，使用Markdown语法，完成图片的插入，这种网站就被成为图床。个人选择微博图床和对应chrome插件配合使用。使用如下：<br><img src="https://ws1.sinaimg.cn/large/006ZwoZEly1fyerpx3i0oj30m00fydij.jpg" alt="微博图床使用截图"></p>
-<h2 id="hexo常用命令介绍"><a href="#hexo常用命令介绍" class="headerlink" title="hexo常用命令介绍"></a>hexo常用命令介绍</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo -g #安装Hexo</span><br><span class="line">npm update hexo -g #升级 </span><br><span class="line">hexo init #初始化博客</span><br><span class="line">#简写命令</span><br><span class="line">hexo n &quot;我的博客&quot; == hexo new &quot;我的博客&quot; #新建文章</span><br><span class="line">hexo g == hexo generate #生成</span><br><span class="line">hexo s == hexo server #启动服务预览</span><br><span class="line">hexo d == hexo deploy #部署</span><br><span class="line"># 常用命令</span><br><span class="line">hexo server #Hexo会监视文件变动并自动更新，无须重启服务器</span><br><span class="line">hexo server -s #静态模式</span><br><span class="line">hexo server -p 5000 #更改端口</span><br><span class="line">hexo server -i 192.168.1.1 #自定义 IP</span><br><span class="line">hexo clean #清除缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
-<p>本文参考配置<a href="https://zhuanlan.zhihu.com/p/26625249" target="_blank" rel="noopener">链接</a></p>
-
           
+毕业在互联网从事后台开发即将三年了，给自己搭建个窝总结下工作过程中遇到的一些问题以及自己相应的解决方案。基于hexo和github搭建自己的博客站点，是考虑到github提供了免费的服务，自己无需服务，再者这种方案自己更加可控，更加简洁，没有一些乱七八糟的广告干扰。
+hexo介绍Hexo是一款基于
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/18/1,利用hexo和github建立个人技术博客站点/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -432,17 +438,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/18/hello-world/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -534,10 +538,10 @@
               
               
               <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">1</span>
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">tags</span>
-                
+                </a>
               </div>
             
 
