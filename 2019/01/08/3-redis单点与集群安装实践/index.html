@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="redis,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文主要介绍redis服务单机服务以及集群服务的安装以及一些常用及运维命令。redis官网介绍 单机服务123456# 下载最新版rediswget http://download.redis.io/releases/redis-5.0.3.tar.gz# 解压源码包tar -zxvf redis-5.0.3.tar.gzcd redis-5.0.3make 执行上面命令，二进制文件被编译在src">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis单点与集群安装实践">
+<meta property="og:url" content="https://www.suys.top/2019/01/08/3-redis单点与集群安装实践/index.html">
+<meta property="og:site_name" content="YONGSSU的技术站点">
+<meta property="og:description" content="本文主要介绍redis服务单机服务以及集群服务的安装以及一些常用及运维命令。redis官网介绍 单机服务123456# 下载最新版rediswget http://download.redis.io/releases/redis-5.0.3.tar.gz# 解压源码包tar -zxvf redis-5.0.3.tar.gzcd redis-5.0.3make 执行上面命令，二进制文件被编译在src">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006ZwoZEly1fyz8yfmtbjj30dd08mjrw.jpg">
+<meta property="og:updated_time" content="2019-01-13T03:21:08.385Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis单点与集群安装实践">
+<meta name="twitter:description" content="本文主要介绍redis服务单机服务以及集群服务的安装以及一些常用及运维命令。redis官网介绍 单机服务123456# 下载最新版rediswget http://download.redis.io/releases/redis-5.0.3.tar.gz# 解压源码包tar -zxvf redis-5.0.3.tar.gzcd redis-5.0.3make 执行上面命令，二进制文件被编译在src">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006ZwoZEly1fyz8yfmtbjj30dd08mjrw.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.suys.top/2019/01/08/3-redis单点与集群安装实践/">
+
+
+
+
+
+  <title>redis单点与集群安装实践 | YONGSSU的技术站点</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YONGSSU的技术站点</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.suys.top/2019/01/08/3-redis单点与集群安装实践/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yongssu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YONGSSU的技术站点">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis单点与集群安装实践</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-08T15:15:34+08:00">
+                2019-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍redis服务单机服务以及集群服务的安装以及一些常用及运维命令。<br><a href="https://redis.io/" target="_blank" rel="noopener">redis官网介绍</a></p>
+<h2 id="单机服务"><a href="#单机服务" class="headerlink" title="单机服务"></a>单机服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 下载最新版redis</span><br><span class="line">wget http://download.redis.io/releases/redis-5.0.3.tar.gz</span><br><span class="line"># 解压源码包</span><br><span class="line">tar -zxvf redis-5.0.3.tar.gz</span><br><span class="line">cd redis-5.0.3</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>执行上面命令，二进制文件被编译在src目录下，用如下命令启动服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">src/redis-server</span><br></pre></td></tr></table></figure>
+<p>用如下命令链接redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">src/redis-cli</span><br></pre></td></tr></table></figure>
+<h2 id="集群服务"><a href="#集群服务" class="headerlink" title="集群服务"></a>集群服务</h2><h4 id="集群介绍"><a href="#集群介绍" class="headerlink" title="集群介绍"></a>集群介绍</h4><h4 id="redis集群方案对比"><a href="#redis集群方案对比" class="headerlink" title="redis集群方案对比"></a>redis集群方案对比</h4><p>redis集群主要有以下几种方案</p>
+<ul>
+<li>redis cluster</li>
+<li>cluster/twemproxy/pika　</li>
+<li>codis/redis </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>====</th>
+<th>redis cluster</th>
+<th>twempoxy</th>
+<th>codis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贡献者</td>
+<td>redis官方</td>
+<td>twitter</td>
+<td>豌豆荚</td>
+</tr>
+<tr>
+<td>是否官方Redis实现</td>
+<td>是</td>
+<td>是</td>
+<td>否，最新版是基于redis3.*版本二次开发</td>
+</tr>
+<tr>
+<td>client</td>
+<td>需要客户端实现对cluster的支持</td>
+<td>对client透明</td>
+<td>对client透明</td>
+</tr>
+<tr>
+<td>pipline</td>
+<td>需要客户端支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>水平扩容</td>
+<td>1.支持通过运行时增加Master节点来水平扩容，提升存储容量，尽力降低命中率波动  2.运行时动态迁移大尺寸键值可能造成响应时延</td>
+<td>1.不支持运行时水平扩容，需要重启。 2.根据一致性哈希算法进行数据重新分片。</td>
+<td>支持运行时水平扩容</td>
+</tr>
+<tr>
+<td>功能限制</td>
+<td>1.当Client连接到集群的主体部分时可能有少量的写丢失，当Client连接到集群的小部分时可能有显著的写丢失; 2.复杂的多Key操作（Set求并/求交）不能跨节点操作,可以通过使用Hash Tag使相关Key强制哈希到同一Server，但是在数据重新分片期间，还是可能有时间不可用; 3.不支持MULTI/EXEC</td>
+<td>1.不支持多key操作; 2.不支持MULTI/EXEC; 3.不支持EVAL;</td>
+<td>不支持命令：KEYS, MOVE, OBJECT, RENAME, RENAMENX,SORT, SCAN, BITOP,MSETNX, BLPOP, BRPOP, BRPOPLPUSH,PSUBSCRIBE，PUBLISH, PUNSUBSCRIBE, SUBSCRIBE, UNSUBSCRIBE,DISCARD, EXEC, MULTI, UNWATCH, WATCH, SCRIPT EXISTS,SCRIPT FLUSH, SCRIPT KILL, SCRIPT LOAD, AUTH, ECHO,SELECT, BGREWRITEAOF, BGSAVE, CLIENT KILL, CLIENT LIST,CONFIG GET, CONFIG SET, CONFIG RESETSTAT, DBSIZE, DEBUG OBJECT, DEBUG SEGFAULT, FLUSHALL, FLUSHDB,INFO, LASTSAVE, MONITOR, SAVE, SHUTDOWN, SLAVEOF, SLOWLOG, SYNC, TIME</td>
+</tr>
+<tr>
+<td>相较于单点</td>
+<td>1000个节点内拥有线性的伸缩性通常情况下与直接操作Redis实例性能相同。</td>
+<td>通常操作Proxy与直接操作Redis实例性能一样,最坏情况下有20%的性能下降。</td>
+<td>相对于单Redis实例40%性能损失</td>
+</tr>
+<tr>
+<td>总体情况</td>
+<td>1.无中心自组织结构; 2.更强的功能：主备平衡 3.故障转移响应时间长</td>
+<td>1.轻量级； 2.在Proxy层实现一致性哈希； 3.快速的故障节点移除； 4.可借助Sentinel和重启工具降低故障节点移除时的Cache失配。</td>
+<td>1. 基于Zookeeper的Proxy高可用； 2.非官方Redis实现； 3.侧重于动态水平扩容； 4.手动故障转移</td>
+</tr>
+</tbody>
+</table>
+<p>总结：<br>尽量还是使用官方的支持版本，能更好的支持版本升级。</p>
+<h4 id="redis-cluster简介"><a href="#redis-cluster简介" class="headerlink" title="redis cluster简介"></a>redis cluster简介</h4><p>redis cluster 分片映射数据时，采用hash slot，共有16384个slot，每个分片持有部分slot. client 操作时，对key进行 操作，找到对应的slot。<br>具体的key 映射方法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HASH_SLOT = CRC16(key) mod 16384</span><br></pre></td></tr></table></figure>
+<p>client持有一个集群中node 与 slot的映射，client自己计算出目标key 的slot后，到对应的node中拿数据。假如期间目标node中数据有迁移，所要查询的key不存在了，则给客户端返回一个move的错误(类似于http 301跳转)，客户会跳转到新的node去 拿数据。同时会从集群获取最新的slot-&gt;node映射关系。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006ZwoZEly1fyz8yfmtbjj30dd08mjrw.jpg" alt="redis cluster请求跳转图"></p>
+<ul>
+<li>注意redis集群模式只能使用db0</li>
+</ul>
+<h4 id="redis-cluster集群安装"><a href="#redis-cluster集群安装" class="headerlink" title="redis cluster集群安装"></a>redis cluster集群安装</h4><p>下载源码并解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-5.0.3.tar.gz</span><br><span class="line">cd redis-5.0.3.tar.gz</span><br><span class="line">tar -zxvf redis-5.0.3.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>创建6个配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/home/redis/redis-cluster-conf/7001/redis.conf</span><br><span class="line">/home/redis/redis-cluster-conf/7002/redis.conf</span><br><span class="line">/home/redis/redis-cluster-conf/7003/redis.conf</span><br><span class="line">/home/redis/redis-cluster-conf/7004/redis.conf</span><br><span class="line">/home/redis/redis-cluster-conf/7005/redis.conf</span><br><span class="line">/home/redis/redis-cluster-conf/7006/redis.conf</span><br></pre></td></tr></table></figure>
+<p>配置文件样式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">port 7001  #端口</span><br><span class="line">cluster-enabled yes #启用集群模式</span><br><span class="line">cluster-config-file nodes.conf</span><br><span class="line">cluster-node-timeout 5000 #超时时间</span><br><span class="line">appendonly yes</span><br><span class="line">daemonize yes #后台运行</span><br><span class="line">protected-mode no #非保护模式</span><br><span class="line">pidfile  /var/run/redis_7001.pid</span><br></pre></td></tr></table></figure>
+<p>启动节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7001/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7002/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7003/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7004/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7005/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7006/redis.conf</span><br></pre></td></tr></table></figure>
+<p>启动集群</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/home/redis/redis-5.0.0/src/redis-cli --cluster create 192.168.2.40:7001 192.168.2.40:7002 192.168.2.40:7003 192.168.2.40:7004 192.168.2.40:7005 192.168.2.40:7006 --cluster-replicas 1</span><br></pre></td></tr></table></figure>
+<h4 id="redis集群相关运维命令"><a href="#redis集群相关运维命令" class="headerlink" title="redis集群相关运维命令"></a>redis集群相关运维命令</h4><p><em>关闭集群</em></p>
+<p>redis5 提供了关闭集群的工具，在如下目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/home/redis/redis-5.0.0/utils/create-cluster</span><br><span class="line">#修改相关脚本端口为我们自己的，端口PROT设置为7000，NODES为6，工具会自动累加1 生成 7001-7006 六个节点 用于操作。</span><br><span class="line">#关闭集群</span><br><span class="line">/home/redis/redis-5.0.0/utils/create-cluster/create-cluster stop</span><br></pre></td></tr></table></figure>
+<p><em>重启集群</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/home/redis/redis-5.0.0/utils/create-cluster/create-cluster start</span><br></pre></td></tr></table></figure>
+<p><em>脚本重启</em></p>
+<p>跨机器的集群需要考虑脚本如何启动不同机器的redis服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7001/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7002/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7003/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7004/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7005/redis.conf</span><br><span class="line">/home/redis/redis-5.0.0/src/redis-server  /home/redis/redis-cluster-conf/7006/redis.conf</span><br><span class="line"></span><br><span class="line">/home/redis/redis-5.0.0/src/redis-cli --cluster create 192.168.2.40:7001 192.168.2.40:7002 192.168.2.40:7003 192.168.2.40:7004 192.168.2.40:7005 192.168.2.40:7006 --cluster-replicas 1</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="noopener">redis集群相关样例</a><br><a href="https://redis.io/topics/cluster-spec" target="_blank" rel="noopener">redis集群相关原理</a></p>
+<h2 id="redis监控工具"><a href="#redis监控工具" class="headerlink" title="redis监控工具"></a>redis监控工具</h2><h4 id="redis-stat"><a href="#redis-stat" class="headerlink" title="redis-stat"></a>redis-stat</h4><p>一个用ruby写成的监控redis的程序，基于info命令获取信息，而不是通过monitor获取信息，性能应该比monitor要好。</p>
+<p><a href="https://github.com/junegunn/redis-stat" target="_blank" rel="noopener">github地址</a></p>
+<p>环境安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">apt-get install ruby</span><br><span class="line">apt-get install rubygems</span><br><span class="line"></span><br><span class="line">git clone https://github.com/junegunn/redis-stat.git</span><br><span class="line">cd /root/redis-stat/bin</span><br><span class="line">###./redis-stat --help 可以看到使用帮助</span><br><span class="line">./redis-stat 1</span><br></pre></td></tr></table></figure>
+<p>redis-stat命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">usage: redis-stat [HOST[:PORT] ...] [INTERVAL [COUNT]]</span><br><span class="line"></span><br><span class="line">    -a, --auth=PASSWORD              Password</span><br><span class="line">    -v, --verbose                    Show more info</span><br><span class="line">        --style=STYLE                Output style: unicode|ascii</span><br><span class="line">        --no-color                   Suppress ANSI color codes</span><br><span class="line">        --csv=OUTPUT_CSV_FILE_PATH   Save the result in CSV format</span><br><span class="line"></span><br><span class="line">        --server[=PORT]              Launch redis-stat web server (default port: 63790)</span><br><span class="line">        --daemon                     Daemonize redis-stat. Must be used with --server option.</span><br><span class="line"></span><br><span class="line">        --version                    Show version</span><br><span class="line">        --help                       Show this message</span><br></pre></td></tr></table></figure>
+<p>redis-stat命令行模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">redis-stat</span><br><span class="line">redis-stat 1</span><br><span class="line">redis-stat 1 10</span><br><span class="line">redis-stat --verbose</span><br><span class="line">redis-stat localhost:6380 1 10</span><br><span class="line">redis-stat localhost localhost:6380 localhost:6381 5</span><br><span class="line">redis-stat localhost localhost:6380 1 10 --csv=/tmp/output.csv --verbose</span><br></pre></td></tr></table></figure>
+<p>redis-stat web模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis-stat --server</span><br><span class="line">redis-stat --verbose --server=8080 5</span><br><span class="line">redis-stat --server --daemon</span><br></pre></td></tr></table></figure>
+<p>如果ruby环境有问题可以直接用可直接执行jar包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">即将上面redis-stat换成java -jar redis-stat-0.4.14.jar，这样可以免去安装ruby环境的烦恼</span><br><span class="line">java -jar redis-stat-0.4.14.jar --server</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis/" rel="tag"># redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/23/2-spring async与CompletableFuture异步模型实践指南/" rel="next" title="spring async与CompletableFuture异步模型实践指南">
+                <i class="fa fa-chevron-left"></i> spring async与CompletableFuture异步模型实践指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/08/4-redus lua脚本实践/" rel="prev" title="redis lua脚本实践">
+                redis lua脚本实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">yongssu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yongssu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yongssu@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单机服务"><span class="nav-number">1.</span> <span class="nav-text">单机服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群服务"><span class="nav-number">2.</span> <span class="nav-text">集群服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集群介绍"><span class="nav-number">2.0.1.</span> <span class="nav-text">集群介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis集群方案对比"><span class="nav-number">2.0.2.</span> <span class="nav-text">redis集群方案对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis-cluster简介"><span class="nav-number">2.0.3.</span> <span class="nav-text">redis cluster简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis-cluster集群安装"><span class="nav-number">2.0.4.</span> <span class="nav-text">redis cluster集群安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis集群相关运维命令"><span class="nav-number">2.0.5.</span> <span class="nav-text">redis集群相关运维命令</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#redis监控工具"><span class="nav-number">3.</span> <span class="nav-text">redis监控工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#redis-stat"><span class="nav-number">3.0.1.</span> <span class="nav-text">redis-stat</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yongssu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
