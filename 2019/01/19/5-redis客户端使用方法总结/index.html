@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介本文主要讲解spring-boot&amp;amp;java下redis客户端的使用以及python下python客户端的使用。 spring-boot&amp;amp;javaSpringDataRedis项目通过使用一个键值样式的数据存储，将核心Spring概念应用到解决方案的开发中。提供了一个“模板”，作为发送和接收消息的高级抽象。与Spring框架中的JDBC支持类似。 Spring Data Red">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis客户端使用方法总结">
+<meta property="og:url" content="https://www.suys.top/2019/01/19/5-redis客户端使用方法总结/index.html">
+<meta property="og:site_name" content="YONGSSU的技术站点">
+<meta property="og:description" content="简介本文主要讲解spring-boot&amp;amp;java下redis客户端的使用以及python下python客户端的使用。 spring-boot&amp;amp;javaSpringDataRedis项目通过使用一个键值样式的数据存储，将核心Spring概念应用到解决方案的开发中。提供了一个“模板”，作为发送和接收消息的高级抽象。与Spring框架中的JDBC支持类似。 Spring Data Red">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-20T14:36:33.819Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis客户端使用方法总结">
+<meta name="twitter:description" content="简介本文主要讲解spring-boot&amp;amp;java下redis客户端的使用以及python下python客户端的使用。 spring-boot&amp;amp;javaSpringDataRedis项目通过使用一个键值样式的数据存储，将核心Spring概念应用到解决方案的开发中。提供了一个“模板”，作为发送和接收消息的高级抽象。与Spring框架中的JDBC支持类似。 Spring Data Red">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.suys.top/2019/01/19/5-redis客户端使用方法总结/">
+
+
+
+
+
+  <title>redis客户端使用方法总结 | YONGSSU的技术站点</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4f8f7de1ad0ae329b1888cb429395edc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YONGSSU的技术站点</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.suys.top/2019/01/19/5-redis客户端使用方法总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yongssu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YONGSSU的技术站点">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis客户端使用方法总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-19T21:16:16+08:00">
+                2019-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本文主要讲解spring-boot&amp;java下redis客户端的使用以及python下python客户端的使用。</p>
+<h2 id="spring-boot-amp-java"><a href="#spring-boot-amp-java" class="headerlink" title="spring-boot&amp;java"></a>spring-boot&amp;java</h2><p>SpringDataRedis项目通过使用一个键值样式的数据存储，将核心Spring概念应用到解决方案的开发中。提供了一个“模板”，作为发送和接收消息的高级抽象。与Spring框架中的JDBC支持类似。</p>
+<p>Spring Data Redis提供了从Spring应用程序轻松配置和访问Redis的功能。它提供了与存储交互的低级和高级抽象，从而使用户不必担心基础设施问题</p>
+<p>Spring ReDIS需要ReDIS 2.6或以上，Spring Data Redis支持与 <a href="https://github.com/lettuce-io/lettuce-core" target="_blank" rel="noopener">Lettuce</a> 和 <a href="https://github.com/xetorthio/jedis" target="_blank" rel="noopener">Jedis</a> 集成,目前Lettuce对于redis集群支持的比较完备。我们的样例将以lettuce-io作为讲解。</p>
+<p><strong>Spring Data Redis特性</strong>：</p>
+<ul>
+<li>Spring Data Redis 可以支持对redis的基本数据读取与写入</li>
+<li>Spring Data Redis 可以实现主节点写，副本节点读</li>
+<li>Spring Data Redis 支持Sentinel，用于处理高可用Redis</li>
+</ul>
+<p>RedisTemplate处理对象<br>redisTemplate是Redis模块的中心类，提供了高级抽象与redis进行交互。同时RedisConnection提供了一个低级方法处理和返回二进制数据(byte arrays). RedisTemplate关注学裂化和管理，使得用户无需处理这些细节。</p>
+<p>此外，该Template还提供操作视图（根据<a href="https://redis.io/commands" target="_blank" rel="noopener">redis命令</a>引用中的分组），这些视图提供丰富的、通用的接口，用于处理特定类型或特定键（通过键绑定接口），如下表所述。</p>
+<p><a href="https://docs.spring.io/spring-data/redis/docs/2.1.3.RELEASE/reference/html/#redis:template" target="_blank" rel="noopener">具体操作视图描述表格</a></p>
+<p>配置后，模板是线程安全的，可以跨多个实例重用。</p>
+<p>RedisTemplate使用基于Java的序列化器进行大部分操作，这意味着模板的写入或读取的任何对象都是java序列化，并通过Java反序列化的。可以改变template的序列化机制并且redis提供了几个接口，在org.springframework.data.redis.serialize包下。</p>
+<p>Spring redis Data还抽象了如下redis机制功能:</p>
+<ul>
+<li>Redis Messaging(Pub/Sub)</li>
+<li>Redis Transactions机制</li>
+<li>Redis pipeline</li>
+<li>Redis lua脚本eval evalhash</li>
+<li>Redis cluster支持</li>
+<li>与Spring CacheManage结合</li>
+<li>Redis Repositories作为存储</li>
+</ul>
+<p>更加具体的使用参看 <a href="https://docs.spring.io/spring-data/redis/docs/2.1.3.RELEASE/reference/html/" target="_blank" rel="noopener">官方文档查看</a></p>
+<h3 id="spring-boot-amp-java单实例redis使用"><a href="#spring-boot-amp-java单实例redis使用" class="headerlink" title="spring-boot&amp;java单实例redis使用"></a>spring-boot&amp;java单实例redis使用</h3><p>相关配置redis配置代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisConnectionFactory <span class="title">redisConnectionFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LettuceConnectionFactory(<span class="keyword">new</span> RedisStandaloneConfiguration(<span class="string">"localhost"</span>, <span class="number">6379</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Jackson2JsonRedisSerializer <span class="title">Jackson2JsonRedisSerializer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）</span></span><br><span class="line">        <span class="comment">// 这个只能指定具体的类对象，不能自由指定</span></span><br><span class="line">        Jackson2JsonRedisSerializer jacksonSeial = <span class="keyword">new</span> Jackson2JsonRedisSerializer(RedisOpsDemo.User.class);</span><br><span class="line">        ObjectMapper om = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">        <span class="comment">// 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public</span></span><br><span class="line">        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);</span><br><span class="line">        <span class="comment">// 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常</span></span><br><span class="line">        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);</span><br><span class="line">        jacksonSeial.setObjectMapper(om);</span><br><span class="line">        <span class="keyword">return</span> jacksonSeial;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate <span class="title">redisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory, Jackson2JsonRedisSerializer jackson2JsonRedisSerializer)</span> </span>&#123;</span><br><span class="line">        RedisTemplate&lt;String, Object&gt; template = <span class="keyword">new</span> RedisTemplate&lt;&gt;();</span><br><span class="line">        <span class="comment">// 配置连接工厂</span></span><br><span class="line">        template.setConnectionFactory(redisConnectionFactory);</span><br><span class="line">        <span class="comment">// 值采用json序列化</span></span><br><span class="line">        template.setValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        <span class="comment">//使用StringRedisSerializer来序列化和反序列化redis的key值</span></span><br><span class="line">        template.setKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置hash key 和value序列化模式</span></span><br><span class="line">        template.setHashKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">        template.setHashValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        template.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> template;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> StringRedisTemplate <span class="title">stringRedisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory)</span> </span>&#123;</span><br><span class="line">        StringRedisTemplate template = <span class="keyword">new</span> StringRedisTemplate();</span><br><span class="line">        template.setConnectionFactory(redisConnectionFactory);</span><br><span class="line">        <span class="keyword">return</span> template;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListOperations&lt;String, String&gt; <span class="title">listOperations</span><span class="params">(RedisTemplate redisTemplate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForList();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SetOperations&lt;String, String&gt; <span class="title">setOperations</span><span class="params">(RedisTemplate redisTemplate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForSet();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HashOperations&lt;String, String, String&gt; <span class="title">hashOperations</span><span class="params">(RedisTemplate redisTemplate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForHash();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>opsOperation操作样例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">list</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    listOperations.leftPush(<span class="string">"list_key"</span>, <span class="string">"value1"</span>);</span><br><span class="line">    listOperations.leftPush(<span class="string">"list_key"</span>, <span class="string">"value2"</span>);</span><br><span class="line">    String value = listOperations.index(<span class="string">"list_key"</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">set</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setOperations.add(<span class="string">"set_key"</span>, <span class="string">"value1"</span>, <span class="string">"value2"</span>);</span><br><span class="line">    String value = setOperations.pop(<span class="string">"set_key"</span>);</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hash1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    hashOperations.put(<span class="string">"hash_key1"</span>, <span class="string">"hash_key_1"</span>, <span class="string">"hash_value_1"</span>);</span><br><span class="line">    Map&lt;String, Object&gt; map = hashOperations.entries(<span class="string">"hash_key"</span>);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hash2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="string">"hash_key2"</span>, <span class="string">"hash_value_1"</span>);</span><br><span class="line">    map.put(<span class="string">"hash_key2"</span>, <span class="string">"hash_value_2"</span>);</span><br><span class="line">    hashOperations.putAll(<span class="string">"hash_key2"</span>, map);</span><br><span class="line">    <span class="keyword">return</span> hashOperations.entries(<span class="string">"hash_key2"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hash3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="string">"hash_key3"</span>, <span class="keyword">new</span> User(<span class="string">"zhangsan"</span>, <span class="number">10</span>));</span><br><span class="line">    map.put(<span class="string">"hash_key4"</span>, <span class="keyword">new</span> User(<span class="string">"lisi"</span>, <span class="number">11</span>));</span><br><span class="line">    hashOperations.putAll(<span class="string">"hash_master_key3"</span>, map);</span><br><span class="line">    <span class="keyword">return</span> hashOperations.entries(<span class="string">"hash_master_key3"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>StringRedisTemplate操作样例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">string</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    stringRedisTemplate.boundListOps(<span class="string">"list_key2"</span>).leftPush(<span class="string">"list_key2_value"</span>);</span><br><span class="line">    <span class="keyword">return</span> stringRedisTemplate.boundListOps(<span class="string">"list_key2"</span>).index(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>pipeline</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">pipeline</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//pop a specified number of items from a queue</span></span><br><span class="line">    List&lt;Object&gt; results = stringRedisTemplate.executePipelined(</span><br><span class="line">            <span class="keyword">new</span> RedisCallback&lt;Object&gt;() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> Object <span class="title">doInRedis</span><span class="params">(RedisConnection connection)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</span><br><span class="line">                    StringRedisConnection stringRedisConn = (StringRedisConnection) connection;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">                        stringRedisConn.rPop(<span class="string">"myqueue"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">    List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    results.forEach(item -&gt; result.add((String) item));</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>lua</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Appconfig.java</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RedisScript&lt;Boolean&gt; <span class="title">script</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ScriptSource scriptSource = <span class="keyword">new</span> ResourceScriptSource(<span class="keyword">new</span> ClassPathResource(<span class="string">"scripts/checkandset.lua"</span>));</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> RedisScript.of(scriptSource.getScriptAsString(), Boolean.class);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"script exception"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> RedisScript&lt;Boolean&gt; script;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Boolean <span class="title">lua</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Boolean)redisTemplate.execute(script, Lists.newArrayList(<span class="string">"lua_key"</span>), Lists.newArrayList(<span class="string">"lua_value1"</span>, <span class="string">"lua_value2"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- checkandset</span></span><br><span class="line"><span class="comment">-- checkandset.lua</span></span><br><span class="line"><span class="keyword">local</span> current = redis.call(<span class="string">'GET'</span>, KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">if</span> current == ARGV[<span class="number">1</span>]</span><br><span class="line">  <span class="keyword">then</span> redis.call(<span class="string">'SET'</span>, KEYS[<span class="number">1</span>], ARGV[<span class="number">2</span>])</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">return</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h3 id="spring-boot-amp-java-redis集群配置使用"><a href="#spring-boot-amp-java-redis集群配置使用" class="headerlink" title="spring-boot&amp;java redis集群配置使用"></a>spring-boot&amp;java redis集群配置使用</h3><p>集群地址配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.redis.cluster"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisClusterProperties</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * spring.redis.cluster.nodes[0] = 127.0.0.1:7379</span></span><br><span class="line"><span class="comment">     * spring.redis.cluster.nodes[1] = 127.0.0.1:7380</span></span><br><span class="line"><span class="comment">     * ...</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    List&lt;String&gt; nodes;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get initial collection of known cluster nodes in format &#123;<span class="doctag">@code</span> host:port&#125;.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getNodes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> nodes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNodes</span><span class="params">(List&lt;String&gt; nodes)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.nodes = nodes;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>集群链接配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用于替换单实例redis链接，其余的使用方法和前面的一致</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 集群</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">RedisClusterProperties redisClusterProperties;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RedisConnectionFactory <span class="title">connectionFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    RedisClusterConfiguration redisClusterConfiguration = <span class="keyword">new</span> RedisClusterConfiguration(redisClusterProperties.getNodes());</span><br><span class="line">    redisClusterConfiguration.setPassword(RedisPassword.of(<span class="string">"test"</span>));</span><br><span class="line"></span><br><span class="line">    RedisConnectionFactory redisConnectionFactory = <span class="keyword">new</span> LettuceConnectionFactory(redisClusterConfiguration);</span><br><span class="line">    <span class="keyword">return</span> redisConnectionFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/yongssu/demo/tree/master/spring-boot-redis" target="_blank" rel="noopener">源码参考</a></p>
+<h2 id="python"><a href="#python" class="headerlink" title="python"></a>python</h2><h3 id="python单实例redis使用"><a href="#python单实例redis使用" class="headerlink" title="python单实例redis使用"></a>python单实例redis使用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"></span><br><span class="line">redis_conn1 = redis.Redis(host=<span class="string">'127.0.0.1'</span>, port=<span class="number">6379</span>, decode_responses=<span class="keyword">True</span>)</span><br><span class="line">pool = redis.ConnectionPool(</span><br><span class="line">    host=<span class="string">'127.0.0.1'</span>,</span><br><span class="line">    port=<span class="number">6379</span>,</span><br><span class="line">    <span class="comment"># password='test',</span></span><br><span class="line">    db=<span class="number">0</span>,</span><br><span class="line">    max_connections=<span class="number">60</span>,</span><br><span class="line">    decode_responses=<span class="keyword">True</span>,</span><br><span class="line">    <span class="comment"># connection options</span></span><br><span class="line">    socket_timeout=<span class="number">60</span>,</span><br><span class="line">    socket_connect_timeout=<span class="number">60</span>,</span><br><span class="line">    socket_keepalive=<span class="keyword">False</span>,</span><br><span class="line">    socket_keepalive_options=<span class="keyword">None</span>,</span><br><span class="line">    retry_on_timeout=<span class="keyword">False</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">redis_pool1 = redis.StrictRedis(connection_pool=pool)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_redis</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 命令行与redis原声命令一样</span></span><br><span class="line">    redis_conn1.set(<span class="string">'key1'</span>, <span class="string">'value1'</span>)</span><br><span class="line">    print(redis_conn1.get(<span class="string">'key1'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_pool</span><span class="params">()</span>:</span></span><br><span class="line">    redis_pool1.set(<span class="string">"key2"</span>, <span class="string">'value2'</span>)</span><br><span class="line">    print(redis_pool1.get(<span class="string">"key2"</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    test_redis()</span><br><span class="line">    test_pool()</span><br></pre></td></tr></table></figure>
+<h3 id="python-redis集群使用"><a href="#python-redis集群使用" class="headerlink" title="python redis集群使用"></a>python redis集群使用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"></span><br><span class="line">redis_conn1 = redis.Redis(host=<span class="string">'127.0.0.1'</span>, port=<span class="number">6379</span>, decode_responses=<span class="keyword">True</span>)</span><br><span class="line">pool = redis.ConnectionPool(</span><br><span class="line">    host=<span class="string">'127.0.0.1'</span>,</span><br><span class="line">    port=<span class="number">6379</span>,</span><br><span class="line">    <span class="comment"># password='test',</span></span><br><span class="line">    db=<span class="number">0</span>,</span><br><span class="line">    max_connections=<span class="number">60</span>,</span><br><span class="line">    decode_responses=<span class="keyword">True</span>,</span><br><span class="line">    <span class="comment"># connection options</span></span><br><span class="line">    socket_timeout=<span class="number">60</span>,</span><br><span class="line">    socket_connect_timeout=<span class="number">60</span>,</span><br><span class="line">    socket_keepalive=<span class="keyword">False</span>,</span><br><span class="line">    socket_keepalive_options=<span class="keyword">None</span>,</span><br><span class="line">    retry_on_timeout=<span class="keyword">False</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">redis_pool1 = redis.StrictRedis(connection_pool=pool)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_redis</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 命令行与redis原声命令一样</span></span><br><span class="line">    redis_conn1.set(<span class="string">'key1'</span>, <span class="string">'value1'</span>)</span><br><span class="line">    print(redis_conn1.get(<span class="string">'key1'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_pool</span><span class="params">()</span>:</span></span><br><span class="line">    redis_pool1.set(<span class="string">"key2"</span>, <span class="string">'value2'</span>)</span><br><span class="line">    print(redis_pool1.get(<span class="string">"key2"</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    test_redis()</span><br><span class="line">    test_pool()</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/yongssu/demo/blob/master/python-redis/single_redis_cluster.py" target="_blank" rel="noopener">源码参考</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/08/4-redis下lua脚本实践/" rel="next" title="redis lua脚本实践">
+                <i class="fa fa-chevron-left"></i> redis lua脚本实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">yongssu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/yongssu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yongssu@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot-amp-java"><span class="nav-number">1.1.</span> <span class="nav-text">spring-boot&amp;java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spring-boot-amp-java单实例redis使用"><span class="nav-number">1.1.1.</span> <span class="nav-text">spring-boot&amp;java单实例redis使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring-boot-amp-java-redis集群配置使用"><span class="nav-number">1.1.2.</span> <span class="nav-text">spring-boot&amp;java redis集群配置使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python"><span class="nav-number">1.2.</span> <span class="nav-text">python</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python单实例redis使用"><span class="nav-number">1.2.1.</span> <span class="nav-text">python单实例redis使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-redis集群使用"><span class="nav-number">1.2.2.</span> <span class="nav-text">python redis集群使用</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yongssu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
