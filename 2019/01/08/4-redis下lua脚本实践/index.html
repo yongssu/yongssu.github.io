@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="YONGSSU的技术站点">
 <meta property="og:description" content="redis lua简介Lua 脚本功能是Reids2.6版本的最大亮点， 通过内嵌对Lua环境的支持，Redis解决了长久以来不能高效地处理CAS（check-and-set）命令的缺点，并且可以通过组合使用多个命令，轻松实现以前很难实现或者不能高效实现的模式。 基本命令EVAL与EVALSHA通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。  script参数是一段Lua 5.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-16T06:43:49.959Z">
+<meta property="og:updated_time" content="2019-02-02T10:08:00.209Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis lua脚本实践">
 <meta name="twitter:description" content="redis lua简介Lua 脚本功能是Reids2.6版本的最大亮点， 通过内嵌对Lua环境的支持，Redis解决了长久以来不能高效地处理CAS（check-and-set）命令的缺点，并且可以通过组合使用多个命令，轻松实现以前很难实现或者不能高效实现的模式。 基本命令EVAL与EVALSHA通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。  script参数是一段Lua 5.">
@@ -473,7 +473,7 @@
 <p><strong>脚本设计</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">local json = cjson</span><br><span class="line">local user_map = &#123;&#125;</span><br><span class="line">for i, k in pairs(KEYS) do</span><br><span class="line">    -- 从redis获取数据</span><br><span class="line">    local str = redis.call(&apos;GET&apos;, k)</span><br><span class="line">    -- json反序列化</span><br><span class="line">    local user = json.decode(str)</span><br><span class="line">    user_map[k] = user</span><br><span class="line">end</span><br><span class="line">-- json序列化</span><br><span class="line">return json.encode(user_map)</span><br></pre></td></tr></table></figure>
 <p><strong>脚本执行以及输出</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- debug方式执行功能</span><br><span class="line">[yongsheng.su@l-ddr1.vc.dev.cn0 ~]$ sudo /home//redis-5.0.3/src/redis-cli -p 8379 --ldb --eval redis_lua.lua user_1 user_2</span><br><span class="line">&quot;&#123;\&quot;user_1\&quot;:&#123;\&quot;id\&quot;:1,\&quot;age\&quot;:25,\&quot;name\&quot;:\&quot;zhangsan\&quot;,\&quot;email\&quot;:\&quot;zhangsan@redis.com\&quot;&#125;,\&quot;user_2\&quot;:&#123;\&quot;id\&quot;:2,\&quot;age\&quot;:10,\&quot;name\&quot;:\&quot;lisi\&quot;,\&quot;email\&quot;:\&quot;lisi@redis.com\&quot;&#125;&#125;&quot;</span><br><span class="line">-- 正常方式执行</span><br><span class="line">[yongsheng.su@l-ddr1.vc.dev.cn0 ~]$ sudo /home/redis-5.0.3/src/redis-cli -p 8379 --eval redis_lua.lua user_1 user_2</span><br><span class="line">&quot;&#123;\&quot;user_1\&quot;:&#123;\&quot;id\&quot;:1,\&quot;age\&quot;:25,\&quot;name\&quot;:\&quot;zhangsan\&quot;,\&quot;email\&quot;:\&quot;zhangsan@redis.com\&quot;&#125;,\&quot;user_2\&quot;:&#123;\&quot;id\&quot;:2,\&quot;age\&quot;:10,\&quot;name\&quot;:\&quot;lisi\&quot;,\&quot;email\&quot;:\&quot;lisi@redis.com\&quot;&#125;&#125;&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- debug方式执行功能</span><br><span class="line">[yongssu@l-ddr1.vc.dev.cn0 ~]$ sudo /home//redis-5.0.3/src/redis-cli -p 8379 --ldb --eval redis_lua.lua user_1 user_2</span><br><span class="line">&quot;&#123;\&quot;user_1\&quot;:&#123;\&quot;id\&quot;:1,\&quot;age\&quot;:25,\&quot;name\&quot;:\&quot;zhangsan\&quot;,\&quot;email\&quot;:\&quot;zhangsan@redis.com\&quot;&#125;,\&quot;user_2\&quot;:&#123;\&quot;id\&quot;:2,\&quot;age\&quot;:10,\&quot;name\&quot;:\&quot;lisi\&quot;,\&quot;email\&quot;:\&quot;lisi@redis.com\&quot;&#125;&#125;&quot;</span><br><span class="line">-- 正常方式执行</span><br><span class="line">[yongssu@l-ddr1.vc.dev.cn0 ~]$ sudo /home/redis-5.0.3/src/redis-cli -p 8379 --eval redis_lua.lua user_1 user_2</span><br><span class="line">&quot;&#123;\&quot;user_1\&quot;:&#123;\&quot;id\&quot;:1,\&quot;age\&quot;:25,\&quot;name\&quot;:\&quot;zhangsan\&quot;,\&quot;email\&quot;:\&quot;zhangsan@redis.com\&quot;&#125;,\&quot;user_2\&quot;:&#123;\&quot;id\&quot;:2,\&quot;age\&quot;:10,\&quot;name\&quot;:\&quot;lisi\&quot;,\&quot;email\&quot;:\&quot;lisi@redis.com\&quot;&#125;&#125;&quot;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -595,7 +595,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
